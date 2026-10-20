@@ -1,0 +1,8 @@
+node_modules
+dist
+data
+package-lock.json
+public/brand
+playwright-report
+test-results
+.env

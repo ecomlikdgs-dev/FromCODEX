@@ -1,6 +1,20 @@
 # Ecomlik Academy
 
-A Moroccan Darija, RTL course landing page with a real lead-capture backend and a WhatsApp handoff. Built with React, TypeScript, Vite, Express and SQLite. The supplied transparent SVG logo and icon are used directly. Fonts are bundled locally.
+A Moroccan Darija, RTL course landing page with enrolment requests and a WhatsApp handoff. Deploy on **Netlify with Netlify Forms**, or run the included Express/SQLite server. The supplied transparent SVG logo and icon are used directly. Fonts are bundled locally.
+
+## Launch on GitHub and Netlify
+
+Follow [the launch guide](docs/netlify-launch.md). The repository includes `netlify.toml`, so Netlify can build the extracted project using **`npm run build:netlify`**, publish **`dist`**, and use **Node 24**. Enable Netlify form detection and redeploy if needed; verify a real submission appears under the **`ecomlik-academy`** form before accepting customer enquiries.
+
+The Netlify build uses the platform's form storage. It does not need the Express server, SQLite, `PUBLIC_ORIGIN` or a separate database account. Customers still explicitly send their WhatsApp message after submitting. This is an enrolment-request flow, with payment arranged on WhatsApp.
+
+```sh
+npm ci
+npm run build:netlify
+npm run test:netlify
+```
+
+The Netlify tests simulate form-service responses; actual hosted capture and WhatsApp delivery require a live test in your account. Upload the extracted source folders to GitHub, not just the archive.
 
 ## Run
 
@@ -8,7 +22,7 @@ Requires Node.js **24 or newer** (for the built-in `node:sqlite` module).
 
 ```sh
 cd /workspace/FromCODEX
-npm ci
+npm ci --cache /workspace/.npm-cache
 npm run dev
 ```
 
@@ -32,7 +46,7 @@ Browser tests use the installed `/usr/bin/chromium` by default and a separate da
 
 Edit `src/content.ts` for the offer, curriculum, examples and FAQs. Product examples are explicitly illustrative. No learner testimonials, enrolment counts, founder portraits, income figures, discounts or guarantees have been invented.
 
-## How enquiries work
+## How enquiries work on the included Node server
 
 1. The visitor submits name, phone, country, experience and interest, with explicit consent to follow up on this enquiry.
 2. The API validates the request and saves it to `data/ecomlik.sqlite` before acknowledging success. Duplicate retries use the same submission UUID.
@@ -59,7 +73,7 @@ In GA4, mark `lead_submit_success` as a key event, and keep `whatsapp_click` as 
 
 Visitors can reopen privacy choices from the footer. Revocation reloads the page without analytics; users can remove already-created third-party cookies through browser settings.
 
-## Production
+## Production on a Node host (alternative to Netlify)
 
 ```sh
 cp .env.example .env
@@ -69,7 +83,7 @@ npm run build
 npm start
 ```
 
-`PUBLIC_ORIGIN` is required in production and must exactly match the browser's origin. Terminate HTTPS at your hosting platform or reverse proxy and forward requests to the configured `PORT`. Production startup serves `dist` and the API in the same process. Do not deploy only `dist` to static hosting: the form requires the Node backend. The site is an enquiry funnel; it contains no payment collection or protected course-delivery system.
+`PUBLIC_ORIGIN` is required for the Node server in production and must exactly match the browser's origin. Terminate HTTPS at your hosting platform or reverse proxy and forward requests to the configured `PORT`. This server serves the default `npm run build` output and API in the same process. Use the separate `npm run build:netlify` output for Netlify's managed form service. The site is an enquiry funnel; it contains no payment collection or protected course-delivery system.
 
 Optional settings are described in `.env.example`. Empty WhatsApp/GA overrides fall back to the owner-confirmed public defaults in `src/content.ts`.
 
