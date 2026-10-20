@@ -18,6 +18,31 @@
     <title>Ecomlik Academy | تكوين المنتجات الرقمية بالدارجة</title>
   </head>
   <body>
+    <!-- Netlify detects this static form at deploy time. React submits the same field names. -->
+    <form
+      name="ecomlik-academy"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="website"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="ecomlik-academy" />
+      <input name="name" />
+      <input name="phone" />
+      <input name="country" />
+      <input name="experience" />
+      <input name="interest" />
+      <input name="consent" />
+      <input name="contact_consent_at" />
+      <input name="submission_id" />
+      <input name="course" />
+      <input name="price_mad" />
+      <input name="price_usd" />
+      <input name="utm_source" />
+      <input name="utm_medium" />
+      <input name="utm_campaign" />
+      <input name="website" />
+    </form>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

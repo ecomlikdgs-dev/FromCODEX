@@ -9,9 +9,12 @@
   "scripts": {
     "dev": "tsx server/index.ts",
     "build": "tsc --noEmit && vite build",
+    "build:netlify": "tsc --noEmit && vite build --mode netlify",
+    "preview:netlify": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
     "start": "NODE_ENV=production tsx server/index.ts",
     "test": "node --import tsx --test tests/api.test.ts",
     "test:e2e": "playwright test",
+    "test:netlify": "playwright test --config playwright.netlify.config.ts",
     "leads:export": "tsx server/export.ts"
   },
   "dependencies": {
