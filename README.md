@@ -4,6 +4,8 @@ A Moroccan Darija, RTL course landing page with enrolment requests and a WhatsAp
 
 ## Launch on GitHub and Netlify
 
+See [Analytics and orders](docs/analytics-and-orders.md) for visitor counts, acquisition/landing-page reports, the direct `/order` page and email notification setup. Accepted requests emit GA4's standard `generate_lead` event.
+
 Follow [the launch guide](docs/netlify-launch.md). The repository includes `netlify.toml`, so Netlify can build the extracted project using **`npm run build:netlify`**, publish **`dist`**, and use **Node 24**. Enable Netlify form detection and redeploy if needed; verify a real submission appears under the **`ecomlik-academy`** form before accepting customer enquiries.
 
 The Netlify build uses the platform's form storage. It does not need the Express server, SQLite, `PUBLIC_ORIGIN` or a separate database account. Customers still explicitly send their WhatsApp message after submitting. This is an enrolment-request flow, with payment arranged on WhatsApp.
@@ -67,9 +69,9 @@ An optional HTTPS `LEAD_WEBHOOK_URL` can deliver enquiries to an existing CRM. `
 
 Analytics is opt-in. Choosing the necessary-only option loads no GA/Meta scripts. The GA ID is wired to the supplied property; no access to its reports or historic conversion data was provided.
 
-Events: `page_view`, `cta_click`, `product_interest`, `lead_form_start`, `lead_field_completed`, `lead_submit_success`, `lead_submit_error`, `whatsapp_click`. Field completion sends the **field name**, never its content. Names and phone numbers are saved only as part of the consented enquiry and included in the visitor-controlled WhatsApp message. Do not enable GA automatic form-interaction collection if it would bypass this design.
+Events: `page_view`, `cta_click`, `product_interest`, `lead_form_start`, `lead_field_completed`, `lead_submit_success`, `generate_lead`, `lead_submit_error`, `whatsapp_click`. Field completion sends the **field name**, never its content. Names and phone numbers are saved only as part of the consented enquiry and included in the visitor-controlled WhatsApp message. Disable GA automatic form-interaction collection; the app supplies these events itself.
 
-In GA4, mark `lead_submit_success` as a key event, and keep `whatsapp_click` as a separate funnel step. A click is not proof of a sent message or a purchase. Use GA DebugView/Realtime on the deployed domain to confirm collection with a real consenting visit; automated tests deliberately intercept the tracking scripts. No Meta pixel ID was supplied, so Meta tracking stays disabled.
+In GA4, mark `generate_lead` as the lead key event. Keep `lead_submit_success` diagnostic and `whatsapp_click` as a separate funnel step. A click is not proof of a sent message or a purchase. Use GA DebugView/Realtime on the deployed domain to confirm collection with a real consenting visit; automated tests deliberately intercept the tracking scripts. No Meta pixel ID was supplied, so Meta tracking stays disabled.
 
 Visitors can reopen privacy choices from the footer. Revocation reloads the page without analytics; users can remove already-created third-party cookies through browser settings.
 

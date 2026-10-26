@@ -26,3 +26,13 @@ Reference and YouTube requests returned HTTP 403 from the network proxy. Network
 - GitHub's uploaded `main` was inspected before preparing the launch branch. Its existing history and uploaded source archive were preserved; the missing extracted source folders are part of the launch change.
 
 Still requires the owner's Netlify/GitHub connection, a successful hosted build, enabled form detection, a real dashboard submission check and a visitor-sent WhatsApp message. Payment remains arranged manually over WhatsApp, as requested.
+
+## Analytics and order connectivity update — 26 October 2026
+
+- Added `/order`, explicit registration calls to action, campaign-preserving navigation, submission page capture and standard GA4 `generate_lead` tracking.
+- GA page views now include path, title, sanitized URL and referrer; repeated consent acceptance does not add a duplicate view. Consent also works for the current visit when persistent browser storage is unavailable.
+- Verified the automatic Netlify provider selection with `NETLIFY=true npm run build` and the explicit `npm run build:netlify` build.
+- Backend tests: 6 passed. Default browser suite: 11 passed and one intentionally skipped mobile-only case on desktop. Netlify suite: 14 passed, including direct registration, failed request recovery, campaign fields, accepted-request conversion, absence of contact data in analytics events, consent decline and desktop/mobile accessibility scans.
+- Netlify form responses and analytics scripts are simulated in browser tests. No real request, email notification or WhatsApp message was sent.
+- The owner supplied the public Netlify URL. Requests to it returned workspace-proxy HTTP 403. The domain and GitHub API additions were saved in the network draft, but the running instance still reports an enforced policy with no custom allowed hosts. This observation does not establish that the public website itself returns 403 to visitors.
+- No Netlify auth token, CLI session/site binding, or Google property administration/report connection is available in this workspace. Account settings, live capture, email notifications and Google report receipt remain unverified. See `analytics-and-orders.md` for exact owner-account checks.

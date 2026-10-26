@@ -48,7 +48,7 @@ test('Netlify AJAX contract includes normalized contact data, consent and attrib
   await page.locator('#name').fill('Test Learner');
   await page.locator('#phone').fill('0600000001');
   await page.locator('.lead-form [name=consent]').check();
-  await page.getByRole('button', { name: 'نحفظ الطلب ونكمل فواتساب', exact: true }).click();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
   await expect(page.locator('.form-success')).toBeVisible();
   expect(received).toBeDefined();
   const fields = received!;
@@ -96,16 +96,16 @@ test('failed Netlify submission preserves the form and only a successful retry s
   await page.locator('#name').fill('Test Learner');
   await page.locator('#phone').fill('123');
   await page.locator('.lead-form [name=consent]').check();
-  await page.getByRole('button', { name: 'نحفظ الطلب ونكمل فواتساب', exact: true }).click();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
   await expect(page.locator('#phone-error')).toBeVisible();
   expect(attempts).toBe(0);
   await page.locator('#phone').fill('0600000001');
-  await page.getByRole('button', { name: 'نحفظ الطلب ونكمل فواتساب', exact: true }).click();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.locator('.form-success')).toHaveCount(0);
   await expect(page.locator('#name')).toHaveValue('Test Learner');
   await expect(page.locator('#phone')).toHaveValue('0600000001');
-  await page.getByRole('button', { name: 'نحفظ الطلب ونكمل فواتساب', exact: true }).click();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
   await expect(page.locator('.form-success')).toBeVisible();
   expect(attempts).toBe(2);
 });

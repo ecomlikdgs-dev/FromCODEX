@@ -40,10 +40,10 @@ test('enquiry validates phone, persists and prepares the correct WhatsApp handof
   await page.locator('#name').fill('Test Learner');
   await page.locator('#phone').fill('123');
   await page.locator('.lead-form [name=consent]').check();
-  await page.getByRole('button', { name: 'نحفظ الطلب ونكمل فواتساب', exact: true }).click();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
   await expect(page.locator('#phone-error')).toBeVisible();
   await page.locator('#phone').fill('0600000001');
-  await page.getByRole('button', { name: 'نحفظ الطلب ونكمل فواتساب', exact: true }).click();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
   await expect(page.locator('.form-success')).toBeVisible();
   const handoff = page.getByRole('link', { name: 'نرسل رسالتي على واتساب' });
   const url = new URL((await handoff.getAttribute('href'))!);
@@ -60,12 +60,12 @@ test('network failure preserves entered information and allows retry', async ({ 
   await page.locator('#name').fill('Test Learner');
   await page.locator('#phone').fill('+33600000001');
   await page.locator('.lead-form [name=consent]').check();
-  await page.getByRole('button', { name: 'نحفظ الطلب ونكمل فواتساب', exact: true }).click();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.locator('#name')).toHaveValue('Test Learner');
   await expect(page.locator('#phone')).toHaveValue('+33600000001');
   await page.unroute('**/api/leads');
-  await page.getByRole('button', { name: 'نحفظ الطلب ونكمل فواتساب', exact: true }).click();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
   await expect(page.locator('.form-success')).toBeVisible();
 });
 

@@ -35,6 +35,7 @@ import {
   Youtube,
 } from 'lucide-react';
 import { business, curriculum, faqs } from './content';
+import { isOrderPage, orderHref } from './navigation';
 import {
   defaultPublicConfig,
   loadPublicConfig,
@@ -51,7 +52,7 @@ import {
 } from './tracking';
 
 function LeadLink({
-  children = 'بغيت نعرف تفاصيل التكوين',
+  children = 'طلب التسجيل فالتكوين',
   className = 'button button-primary',
   location,
 }: {
@@ -60,7 +61,7 @@ function LeadLink({
   location: string;
 }) {
   return (
-    <a className={className} href="#join" onClick={() => track('cta_click', { location })}>
+    <a className={className} href={orderHref()} onClick={() => track('cta_click', { location })}>
       {children}
       <ArrowLeft size={18} aria-hidden="true" />
     </a>
@@ -83,7 +84,7 @@ function Header() {
       </div>
       <header className="site-header">
         <div className="container nav-wrap">
-          <a className="brand" href="#home" aria-label="Ecomlik، الصفحة الرئيسية">
+          <a className="brand" href="/" aria-label="Ecomlik، الصفحة الرئيسية">
             <img src="/brand/logo.svg" alt="Ecomlik" width="157" height="43" />
           </a>
           <button
@@ -101,12 +102,12 @@ function Header() {
             aria-label="القائمة الرئيسية"
             onClick={() => setOpen(false)}
           >
-            <a href="#why">علاش المنتجات الرقمية؟</a>
-            <a href="#program">شنو غادي تتعلّم</a>
-            <a href="#faq">الأسئلة الشائعة</a>
+            <a href="/#why">علاش المنتجات الرقمية؟</a>
+            <a href="/#program">شنو غادي تتعلّم</a>
+            <a href="/#faq">الأسئلة الشائعة</a>
           </nav>
           <LeadLink className="button button-small nav-cta" location="navigation">
-            نبدا الرحلة ديالي
+            طلب التسجيل
           </LeadLink>
         </div>
       </header>
@@ -834,8 +835,8 @@ function LeadForm({ config, openPrivacy }: { config: PublicConfig; openPrivacy: 
           <Send size={21} />
         </span>
         <div>
-          <h3>خلّي لينا وسيلة التواصل</h3>
-          <p>باش توصلك تفاصيل التكوين اللي كتحتاج.</p>
+          <h3>سجّل الطلب ديالك</h3>
+          <p>خلّي لينا رقمك باش نتواصلو معاك على التسجيل.</p>
         </div>
       </div>
       {status === 'error' && (
@@ -958,7 +959,7 @@ function LeadForm({ config, openPrivacy }: { config: PublicConfig; openPrivacy: 
           </>
         ) : (
           <>
-            نحفظ الطلب ونكمل فواتساب <ArrowLeft size={19} />
+            نرسل طلب التسجيل <ArrowLeft size={19} />
           </>
         )}
       </button>
@@ -969,21 +970,42 @@ function LeadForm({ config, openPrivacy }: { config: PublicConfig; openPrivacy: 
   );
 }
 
-function Join({ config, openPrivacy }: { config: PublicConfig; openPrivacy: () => void }) {
+function Join({
+  config,
+  openPrivacy,
+  standalone = false,
+}: {
+  config: PublicConfig;
+  openPrivacy: () => void;
+  standalone?: boolean;
+}) {
   const [currency, setCurrency] = useState<'MAD' | 'USD'>('MAD');
+  const Heading = standalone ? 'h1' : 'h2';
   return (
     <section id="join" className="section join-section">
       <div className="container join-grid">
         <div className="join-copy">
-          <span className="eyebrow">الخطوة الجاية ديالك</span>
-          <h2>
-            فكرتك كتستاهل
-            <br />
-            تعطيها فرصة.
-          </h2>
+          {standalone && (
+            <a className="order-back" href="/">
+              الرجوع للرئيسية
+            </a>
+          )}
+          <span className="eyebrow">{standalone ? 'Ecomlik Academy' : 'الخطوة الجاية ديالك'}</span>
+          <Heading>
+            {standalone ? (
+              'طلب التسجيل فـ Ecomlik Academy'
+            ) : (
+              <>
+                فكرتك كتستاهل
+                <br />
+                تعطيها فرصة.
+              </>
+            )}
+          </Heading>
           <p>
-            تعرّف على Ecomlik Academy، وخذ التفاصيل اللي كتحتاج باش تشوف واش هاد التكوين مناسب للهدف
-            والمرحلة ديالك.
+            {standalone
+              ? 'عمّر الاسم ورقم الهاتف. كنحتافظو بالطلب ديالك باش يقدر الفريق يتواصل معاك ويأكد ليك تفاصيل التسجيل. من بعد، تقدر تكمل مباشرة على واتساب.'
+              : 'تعرّف على Ecomlik Academy، وخذ التفاصيل اللي كتحتاج باش تشوف واش هاد التكوين مناسب للهدف والمرحلة ديالك.'}
           </p>
           <div className="offer-name">
             <span>
@@ -1009,29 +1031,31 @@ function Join({ config, openPrivacy }: { config: PublicConfig; openPrivacy: () =
             </strong>
             <p>استمارة طلب معلومات فقط. ما فيها حتى أداء.</p>
           </div>
-          <ul className="join-steps">
-            <li>
-              <span>1</span>
-              <div>
-                <strong>كتعمّر الطلب</strong>
-                <p>بالاسم ووسيلة التواصل ديالك.</p>
-              </div>
-            </li>
-            <li>
-              <span>2</span>
-              <div>
-                <strong>كتكمل فواتساب</strong>
-                <p>كتراجع الرسالة وكترسلها للفريق.</p>
-              </div>
-            </li>
-            <li>
-              <span>3</span>
-              <div>
-                <strong>كتختار على بيّنة</strong>
-                <p>كتتأكد من المحتوى والمواعيد والشروط قبل الأداء.</p>
-              </div>
-            </li>
-          </ul>
+          {!standalone && (
+            <ul className="join-steps">
+              <li>
+                <span>1</span>
+                <div>
+                  <strong>كتعمّر الطلب</strong>
+                  <p>بالاسم ووسيلة التواصل ديالك.</p>
+                </div>
+              </li>
+              <li>
+                <span>2</span>
+                <div>
+                  <strong>كتكمل فواتساب</strong>
+                  <p>كتراجع الرسالة وكترسلها للفريق.</p>
+                </div>
+              </li>
+              <li>
+                <span>3</span>
+                <div>
+                  <strong>كتختار على بيّنة</strong>
+                  <p>كتتأكد من المحتوى والمواعيد والشروط قبل الأداء.</p>
+                </div>
+              </li>
+            </ul>
+          )}
           <div className="join-footnote">
             <MessageCircle size={20} />
             <a
@@ -1215,17 +1239,17 @@ function Footer({
           </div>
           <div>
             <h3>اكتشف Ecomlik</h3>
-            <a href="#why">علاش المنتجات الرقمية؟</a>
-            <a href="#program">المسار التعليمي</a>
-            <a href="#compare">قارن المجالات</a>
+            <a href="/#why">علاش المنتجات الرقمية؟</a>
+            <a href="/#program">المسار التعليمي</a>
+            <a href="/#compare">قارن المجالات</a>
           </div>
           <div>
             <h3>نبقاو على تواصل</h3>
             <a href={business.channelUrl} target="_blank" rel="noreferrer">
               <Youtube size={17} /> قناة يوتيوب <ArrowUpLeft size={15} />
             </a>
-            <a href="#join">طلب معلومات على التكوين</a>
-            <a href="#faq">الأسئلة الشائعة</a>
+            <a href={orderHref()}>طلب التسجيل فالتكوين</a>
+            <a href="/#faq">الأسئلة الشائعة</a>
           </div>
           <div className="footer-message">
             <Globe2 size={25} />
@@ -1254,6 +1278,7 @@ function Footer({
 }
 
 export default function App() {
+  const orderPage = isOrderPage();
   const [config, setConfig] = useState<PublicConfig>(defaultPublicConfig);
   const [legal, setLegal] = useState<'privacy' | 'terms' | null>(null);
   const [cookies, setCookies] = useState(() => {
@@ -1265,6 +1290,9 @@ export default function App() {
   });
   useEffect(() => {
     let alive = true;
+    document.title = orderPage
+      ? 'طلب التسجيل | Ecomlik Academy'
+      : 'Ecomlik Academy | تكوين المنتجات الرقمية بالدارجة';
     loadPublicConfig()
       .then((c: PublicConfig) => {
         if (alive) {
@@ -1285,30 +1313,38 @@ export default function App() {
         تجاوز القائمة للمحتوى
       </a>
       <Header />
-      <main id="main">
-        <Hero />
-        <Why />
-        <Products />
-        <Program />
-        <Comparison />
-        <Community />
-        <Join config={config} openPrivacy={() => setLegal('privacy')} />
-        <FAQ />
-        <section className="final-cta">
-          <div className="container">
-            <div>
-              <span>البداية ما خاصّهاش تكون معقّدة.</span>
-              <h2>فكرة واحدة. وخطوة واضحة لقدّام.</h2>
-            </div>
-            <LeadLink location="final">ناخذ الخطوة الأولى</LeadLink>
-          </div>
-        </section>
+      <main id="main" className={orderPage ? 'order-page' : undefined}>
+        {orderPage ? (
+          <Join config={config} openPrivacy={() => setLegal('privacy')} standalone />
+        ) : (
+          <>
+            <Hero />
+            <Why />
+            <Products />
+            <Program />
+            <Comparison />
+            <Community />
+            <Join config={config} openPrivacy={() => setLegal('privacy')} />
+            <FAQ />
+            <section className="final-cta">
+              <div className="container">
+                <div>
+                  <span>البداية ما خاصّهاش تكون معقّدة.</span>
+                  <h2>فكرة واحدة. وخطوة واضحة لقدّام.</h2>
+                </div>
+                <LeadLink location="final">ناخذ الخطوة الأولى</LeadLink>
+              </div>
+            </section>
+          </>
+        )}
       </main>
       <Footer onLegal={setLegal} onCookies={() => setCookies(true)} />
-      <div className="mobile-cta">
-        <span>بدا مشروعك الرقمي على أساس واضح</span>
-        <LeadLink location="mobile">نعرف تفاصيل التكوين</LeadLink>
-      </div>
+      {!orderPage && (
+        <div className="mobile-cta">
+          <span>بدا مشروعك الرقمي على أساس واضح</span>
+          <LeadLink location="mobile">طلب التسجيل</LeadLink>
+        </div>
+      )}
       <LegalDialog kind={legal} onClose={() => setLegal(null)} />
       <CookieNotice open={cookies} setOpen={setCookies} config={config} />
     </>

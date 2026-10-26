@@ -3638,6 +3638,51 @@ thead {
 .phone-wrap > span {
   color: #5c7764;
 }
+.order-back {
+  display: inline-block;
+  color: #3b6654;
+  font-size: 12px;
+  margin-bottom: 25px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.order-page .join-section {
+  min-height: 75vh;
+  padding-top: 55px;
+}
+.order-page .join-grid {
+  align-items: start;
+}
+.order-page .join-copy h1 {
+  font-size: 34px;
+  line-height: 1.8;
+  letter-spacing: -0.7px;
+}
+.order-page .join-copy > p {
+  margin-top: 18px;
+}
+@media (max-width: 600px) {
+  .order-page .join-section {
+    padding-top: 25px;
+  }
+  .order-page .join-copy h1 {
+    font-size: 27px;
+  }
+  .order-page .join-grid {
+    gap: 25px;
+  }
+  .order-page .offer-price {
+    margin-top: 10px;
+    padding-block: 12px;
+  }
+  .order-page .offer-name {
+    margin-block: 15px;
+  }
+  .order-page .join-footnote {
+    margin-top: 15px;
+    padding-top: 13px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

@@ -1,7 +1,7 @@
 import { business } from './content';
 import type { PublicConfig } from './tracking';
 
-export const usesNetlifyForms = import.meta.env.MODE === 'netlify';
+export const usesNetlifyForms = import.meta.env.VITE_LEAD_PROVIDER === 'netlify';
 export const netlifyFormName = 'ecomlik-academy';
 
 export interface LeadRequest {
@@ -49,6 +49,7 @@ export async function submitEnquiry(lead: LeadRequest): Promise<void> {
       utm_source: lead.attribution.source,
       utm_medium: lead.attribution.medium,
       utm_campaign: lead.attribution.campaign,
+      page_path: window.location.pathname,
       website: lead.website,
     });
     response = await fetch('/', {

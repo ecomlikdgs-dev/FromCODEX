@@ -35,6 +35,8 @@ You do not run `npm start` on Netlify. This build uses Netlify Forms instead of 
 
 ## 3. Enable the form and verify real submissions
 
+The direct registration address is `/order`. See [Analytics and orders](analytics-and-orders.md) for current registration and reporting setup.
+
 1. Open the project's **Forms** area and enable **form detection** if it is disabled.
 2. If enabling detection after the first deploy, trigger another deploy so Netlify scans the published HTML.
 3. Check that a form named **`ecomlik-academy`** appears.
@@ -49,7 +51,7 @@ Submissions include name, normalized phone, country, stage/interest, consent, co
 
 ## 4. Check analytics and your domain
 
-- Accept analytics on a test visit and check GA4 Realtime/DebugView for property measurement ID **G-02NN6XJBCT**. Mark `lead_submit_success` as a key event and keep `whatsapp_click` separate. Neither event is proof of payment.
+- Accept analytics on a test visit and check GA4 Realtime/DebugView for property measurement ID **G-02NN6XJBCT**. Mark `generate_lead` as the lead key event, keep `lead_submit_success` diagnostic and keep `whatsapp_click` separate. These events are not proof of payment.
 - In Netlify's **Domain management**, add your custom domain when you have one. Apply the exact DNS records Netlify gives you and wait for DNS and HTTPS to be verified. The form posts to the current origin, so no API-origin setting needs changing when adding the domain.
 - If the GA web data stream still uses another website URL, update it for the production address/custom domain.
 - Once the repository is connected, pushing a commit to the selected deployment branch normally triggers a rebuild automatically. Check Netlify's deploy result before assuming a change is live.
