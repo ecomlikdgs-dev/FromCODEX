@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
             fileName: 'deployment.json',
             source: JSON.stringify(
               {
-                release: 'analytics-orders-v2',
+                release: 'forms-error-recovery-v3',
                 leadProvider: netlify ? 'netlify_forms' : 'node_api',
                 defaultGaMeasurementId: business.gaId,
                 orderPath: '/order',

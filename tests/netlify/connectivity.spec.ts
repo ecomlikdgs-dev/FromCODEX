@@ -112,7 +112,7 @@ test('direct registration works without analytics consent and exposes the deploy
   request,
 }) => {
   const build = await (await request.get('/deployment.json')).json();
-  expect(build.release).toBe('analytics-orders-v2');
+  expect(build.release).toBe('forms-error-recovery-v3');
   expect(build.leadProvider).toBe('netlify_forms');
   expect(build.defaultGaMeasurementId).toBe('G-02NN6XJBCT');
   await page.goto('/order');
@@ -138,4 +138,50 @@ test('the registration page has no detected WCAG A/AA violations', async ({ page
   expect(result.violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target) }))).toEqual(
     [],
   );
+});
+
+test('a missing Netlify form shows an honest WhatsApp recovery path without counting a saved lead', async ({
+  page,
+  context,
+}) => {
+  await page.goto('/order');
+  await page.getByRole('button', { name: 'نوافق على التحليلات', exact: true }).click();
+  await page.route('http://127.0.0.1:4174/', async (route) => {
+    if (route.request().method() !== 'POST') {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({ status: 404, contentType: 'text/html', body: '<h1>Page not found</h1>' });
+  });
+  await page.locator('#name').fill('Test Learner');
+  await page.locator('#phone').fill('0600000001');
+  await page.locator('.lead-form [name=consent]').check();
+  await page.getByRole('button', { name: 'نرسل طلب التسجيل', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('خدمة التسجيل ما متوفراش دابا');
+  await expect(page.getByRole('alert')).toContainText('ما تأكّدناش من حفظ الطلب');
+  await expect(page.locator('.form-success')).toHaveCount(0);
+  await expect(page.locator('#name')).toHaveValue('Test Learner');
+  const recovery = page.getByRole('link', { name: 'نرسل نفس المعلومات فواتساب' });
+  const destination = new URL((await recovery.getAttribute('href'))!);
+  expect(destination.hostname).toBe('wa.me');
+  expect(destination.pathname).toBe('/212650291012');
+  expect(destination.searchParams.get('text')).toContain('Test Learner');
+  expect(destination.searchParams.get('text')).toContain('+212600000001');
+  // Intercept the popup: this test never contacts WhatsApp or sends a message.
+  await context.route('https://wa.me/**', (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: 'Intercepted test link' }),
+  );
+  const popup = context.waitForEvent('page');
+  await recovery.click();
+  await (await popup).close();
+  const events = await gaEvents(page);
+  expect(
+    events.filter((event) => ['generate_lead', 'lead_submit_success'].includes(event.name)),
+  ).toHaveLength(0);
+  expect(events.find((event) => event.name === 'whatsapp_click')?.params.location).toBe(
+    'form_error',
+  );
+  const data = JSON.stringify(events);
+  expect(data).not.toContain('Test Learner');
+  expect(data).not.toContain('0600000001');
 });

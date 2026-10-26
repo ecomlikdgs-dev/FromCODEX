@@ -719,6 +719,7 @@ function LeadForm({ config, openPrivacy }: { config: PublicConfig; openPrivacy: 
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    setWhatsappMessage('');
     const rawPhone = String(data.get('phone') || '')
       .replace(/[\s().-]/g, '')
       .replace(/^00/, '+');
@@ -738,6 +739,9 @@ function LeadForm({ config, openPrivacy }: { config: PublicConfig; openPrivacy: 
     setPhoneError('');
     setError('');
     setStatus('sending');
+    setWhatsappMessage(
+      `سلام Ecomlik، بغيت نعرف تفاصيل ${business.courseName} (${business.price} درهم / ${business.priceUsd} دولار).\nالاسم: ${name}\nالهاتف: ${phone}\nبلد الإقامة: ${countries.find((c) => c[0] === country)?.[1]}\nالمرحلة: ${form.querySelector<HTMLSelectElement>('[name="experience"]')?.selectedOptions[0]?.text}\nالاهتمام: ${form.querySelector<HTMLSelectElement>('[name="interest"]')?.selectedOptions[0]?.text}`,
+    );
     const params = new URLSearchParams(location.search);
     try {
       await submitEnquiry({
@@ -755,9 +759,6 @@ function LeadForm({ config, openPrivacy }: { config: PublicConfig; openPrivacy: 
           campaign: (params.get('utm_campaign') || '').slice(0, 120),
         },
       });
-      setWhatsappMessage(
-        `سلام Ecomlik، بغيت نعرف تفاصيل ${business.courseName} (${business.price} درهم / ${business.priceUsd} دولار).\nالاسم: ${name}\nالهاتف: ${phone}\nبلد الإقامة: ${countries.find((c) => c[0] === country)?.[1]}\nالمرحلة: ${form.querySelector<HTMLSelectElement>('[name="experience"]')?.selectedOptions[0]?.text}\nالاهتمام: ${form.querySelector<HTMLSelectElement>('[name="interest"]')?.selectedOptions[0]?.text}`,
-      );
       setStatus('success');
       track('lead_submit_success', { form: 'training_enquiry' });
     } catch (e) {
@@ -841,7 +842,22 @@ function LeadForm({ config, openPrivacy }: { config: PublicConfig; openPrivacy: 
       </div>
       {status === 'error' && (
         <div className="form-error" role="alert" ref={errorRef} tabIndex={-1}>
-          {error}
+          <p>{error}</p>
+          {whatsappMessage && config.whatsappNumber && (
+            <div className="form-error-recovery">
+              <p>ما تأكّدناش من حفظ الطلب. تقدر توصّلو لينا مباشرة بهاد الزر:</p>
+              <a
+                className="button error-whatsapp-link"
+                href={`https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => track('whatsapp_click', { location: 'form_error' })}
+              >
+                <MessageCircle size={17} /> نرسل نفس المعلومات فواتساب
+              </a>
+              <p>كتراجع الرسالة وكتضغط على Send فواتساب باش توصل لينا.</p>
+            </div>
+          )}
         </div>
       )}
       <label htmlFor="name">

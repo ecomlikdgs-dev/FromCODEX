@@ -3638,6 +3638,27 @@ thead {
 .phone-wrap > span {
   color: #5c7764;
 }
+.form-error-recovery {
+  margin-top: 12px;
+  border-top: 1px solid #efbfce;
+  padding-top: 12px;
+}
+.form-error-recovery p {
+  font-size: 10px;
+  line-height: 2;
+}
+.error-whatsapp-link {
+  background: white;
+  border-color: #007f83;
+  color: #00696d;
+  font-size: 11px;
+  min-height: 44px;
+  margin: 10px 0;
+  gap: 9px;
+}
+.error-whatsapp-link:hover {
+  background: #edf7f2;
+}
 .order-back {
   display: inline-block;
   color: #3b6654;

@@ -9,13 +9,13 @@ Live website: <https://ecomlikacademy.netlify.app/>. GA4 measurement ID: `G-02NN
 - An accepted request emits **`generate_lead`** (GA4's recommended lead event) and the existing diagnostic `lead_submit_success`. Failures do not emit a lead conversion. No purchase or revenue is reported.
 - Names, phone numbers, submission UUIDs and field contents are kept out of analytics event payloads. Contact information is sent to the form service and the visitor-reviewed WhatsApp message.
 - Campaign parameters follow visitors from the homepage to `/order`. Netlify records the request's `page_path` too.
-- Netlify builds use Netlify Forms, including when the platform runs the standard build with `NETLIFY=true`. `/deployment.json` identifies the compiled release (`analytics-orders-v2`) and provider. This is build configuration, not a live health check of Google or Netlify.
+- Netlify builds use Netlify Forms, including when the platform runs the standard build with `NETLIFY=true`. `/deployment.json` identifies the compiled release (`forms-error-recovery-v3`) and provider. This is build configuration, not a live health check of Google or Netlify.
 
 ## 1. Publish the updated version
 
 The changes are on GitHub branch `codex/netlify-launch`. If Netlify deploys `main`, merge the latest launch branch into `main` and wait for the production deploy. If it deploys `codex/netlify-launch`, pushing the branch normally triggers it. Follow the actual production branch setting; a successful Git push alone does not prove the public site changed.
 
-Build command: `npm run build:netlify`. Publish directory: `dist`. On the production address, check `/deployment.json` for `release: "analytics-orders-v2"` and `leadProvider: "netlify_forms"`. Open `/order` directly.
+Build command: `npm run build:netlify`. Publish directory: `dist`. On the production address, check `/deployment.json` for `release: "forms-error-recovery-v3"` and `leadProvider: "netlify_forms"`. Open `/order` directly.
 
 ## 2. Save requests and receive email notifications
 
@@ -60,6 +60,10 @@ Use consistent labels for each channel. Direct/none can mean the referrer is abs
 
 ## Live-account limitations
 
-This workspace has no Netlify account authentication or Google report/administration connection. The live domain and GitHub API returned proxy HTTP 403; required domain additions were saved in the environment draft. Applying network access allows inspection, not login to the owner's accounts. Form detection, email recipients, Google report access, key-event settings, hosted capture and email delivery still require an authenticated account or owner verification.
+Public-site and GitHub inspection became available after the network update. The live site served the expected build, but a diagnostic POST to its form endpoint returned Netlify HTTP 404. Its HTML still contains the unprocessed `data-netlify` declaration. This is consistent with form detection being disabled or the form not having been registered during deployment; the private dashboard setting cannot be confirmed without account access.
+
+This workspace has no Netlify account authentication or Google report/administration connection. Form detection, email recipients, Google report access, key-event settings, hosted capture and email delivery still require an authenticated account or owner verification.
+
+If form submission is unavailable, visitors can review/send the same entered details directly in WhatsApp. The interface explicitly says saved delivery was not confirmed, preserves the inputs for retry, and does not emit a saved-lead conversion for this fallback. This alternative does not repair or replace Netlify form storage; enable form detection and redeploy to restore stored submissions.
 
 Automated tests intercept analytics and simulate Netlify responses. No real enrolment notification or WhatsApp message was sent. There is no public list of private requests or public admin dashboard.

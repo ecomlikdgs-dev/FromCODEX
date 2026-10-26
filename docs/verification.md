@@ -36,3 +36,11 @@ Still requires the owner's Netlify/GitHub connection, a successful hosted build,
 - Netlify form responses and analytics scripts are simulated in browser tests. No real request, email notification or WhatsApp message was sent.
 - The owner supplied the public Netlify URL. Requests to it returned workspace-proxy HTTP 403. The domain and GitHub API additions were saved in the network draft, but the running instance still reports an enforced policy with no custom allowed hosts. This observation does not establish that the public website itself returns 403 to visitors.
 - No Netlify auth token, CLI session/site binding, or Google property administration/report connection is available in this workspace. Account settings, live capture, email notifications and Google report receipt remain unverified. See `analytics-and-orders.md` for exact owner-account checks.
+
+## Live form failure diagnosis and recovery
+
+- After the network policy changed, live GET requests succeeded. `/deployment.json` confirmed the expected deployed commit and the Netlify Forms provider.
+- A diagnostic POST with a deliberately nonempty honeypot and a clearly labelled setup probe with an empty honeypot both returned Netlify HTTP 404. Neither used a real person's contact details. The live HTML retained the raw `data-netlify` declaration. The receiving form is not being handled; enabling/checking Netlify form detection and redeploying is the remaining account action.
+- Added specific unavailable/temporary-error messages and a visitor-controlled WhatsApp alternative containing the already validated contact fields. Unconfirmed submissions do not show saved success or emit `generate_lead`, including after clicking the alternative link.
+- Netlify browser checks: 16 passed, including desktop/mobile coverage of the observed 404 condition, retained fields, prefilled recovery message and absence of contact details in analytics events. Test popups are intercepted; no WhatsApp message is sent.
+- The first diagnostic honeypot was intentionally nonempty so it would be discarded if a form handler were present. The second probe used an explicit setup-test name and an unallocated-format test number to distinguish handler failure from spam filtering. Both requests returned 404; neither is an acknowledged saved request, and persistence/email delivery cannot be claimed from these probes.
